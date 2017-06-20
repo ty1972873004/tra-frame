@@ -1,6 +1,7 @@
 package com.javaxxw.redis.service;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -117,5 +118,19 @@ public interface JedisClient {
     String set(byte[] key, byte[] value);
 
      Long srem(final String key, final String... members);
+
+    void sadd(String key, String value, int seconds);
+
+    Set<String> smembers(final String key);
+
+    Long scard(final String key);
+
+    void lrem(String key, long count, String value);
+
+    Long llen(final String key);
+
+    List<String> lrange(final String key, final long start, final long end);
+
+    void lpush(String key, String... strings);
 
 }

@@ -52,8 +52,9 @@ public class ManageController extends BaseController {
 		SysUser sysUser = sysUserService.findByLoginName(username);
 
 		List<SysMenu>  tPermissions = sysAuthorizeService.selectPermissionByUserId(sysUser.getId());
+
 		modelMap.put("tPermissions", tPermissions);
-		return "/manage/index.jsp";
+		return "/manager/index.jsp";
 	}
 
 }

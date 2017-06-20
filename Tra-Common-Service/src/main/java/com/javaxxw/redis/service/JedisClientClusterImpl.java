@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisCluster;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 public class JedisClientClusterImpl implements JedisClient {
@@ -126,5 +127,41 @@ public class JedisClientClusterImpl implements JedisClient {
 	@Override
 	public Long srem(String key, String... members) {
 		return jedisCluster.srem(key,members);
+	}
+
+	@Override
+	public void sadd(String key, String value, int seconds) {
+		jedisCluster.sadd(key, value);
+		jedisCluster.expire(key, seconds);
+	}
+
+	@Override
+	public Set<String> smembers(String key) {
+		return jedisCluster.smembers(key);
+	}
+
+	@Override
+	public Long scard(String key) {
+		return jedisCluster.scard(key);
+	}
+
+	@Override
+	public void lrem(String key, long count, String value) {
+		jedisCluster.lrem(key, count, value);
+	}
+
+	@Override
+	public Long llen(String key) {
+		return jedisCluster.llen(key);
+	}
+
+	@Override
+	public List<String> lrange(String key, long start, long end) {
+		return jedisCluster.lrange(key, start, end);
+	}
+
+	@Override
+	public void lpush(String key, String... strings) {
+		jedisCluster.lpush(key,strings);
 	}
 }

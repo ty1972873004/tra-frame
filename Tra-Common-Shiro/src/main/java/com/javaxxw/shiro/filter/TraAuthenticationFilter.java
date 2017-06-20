@@ -3,6 +3,7 @@ package com.javaxxw.shiro.filter;
 import com.alibaba.fastjson.JSONObject;
 import com.javaxxw.common.constants.Constants;
 import com.javaxxw.common.utils.PropertiesFileUtil;
+import com.javaxxw.redis.service.JedisClient;
 import com.javaxxw.redis.service.RedisUtil;
 import com.javaxxw.shiro.session.TraSessionDao;
 import com.javaxxw.shiro.util.RequestParameterUtil;
@@ -54,12 +55,16 @@ public class TraAuthenticationFilter extends AuthenticationFilter {
     @Autowired
     TraSessionDao traSessionDao;
 
+    @Autowired
+    JedisClient jedisClient;
+
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         Subject subject = getSubject(request, response);
         Session session = subject.getSession();
         // 判断请求类型
         String traType = PropertiesFileUtil.getInstance("tra-manager-client").get("tra.manager.type");
+
         session.setAttribute(Constants.MANAGER_TYPE, traType);
         if ("client".equals(traType)) {
             return validateClient(request, response);
@@ -102,13 +107,16 @@ public class TraAuthenticationFilter extends AuthenticationFilter {
         String sessionId = session.getId().toString();
         int timeOut = (int) session.getTimeout() / 1000;
         // 判断局部会话是否登录
-        String cacheClientSession = RedisUtil.get(TRA_MANAGER_CLIENT_SESSION_ID + "_" + session.getId());
+        //String cacheClientSession = RedisUtil.get(TRA_MANAGER_CLIENT_SESSION_ID + "_" + session.getId());
+        String cacheClientSession = (String)jedisClient.get(TRA_MANAGER_CLIENT_SESSION_ID + "_" + session.getId());
         if (StringUtils.isNotBlank(cacheClientSession)) {
             // 更新code有效期
-            RedisUtil.set(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId, cacheClientSession, timeOut);
-            Jedis jedis = RedisUtil.getJedis();
-            jedis.expire(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + cacheClientSession, timeOut);
-            jedis.close();
+            //RedisUtil.set(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId, cacheClientSession, timeOut);
+            jedisClient.set(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId, cacheClientSession, timeOut);
+            // Jedis jedis = RedisUtil.getJedis();
+            // jedis.expire(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + cacheClientSession, timeOut);
+            //jedis.close();
+            jedisClient.expire(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + cacheClientSession, timeOut);
             // 移除url中的code参数
             if (null != request.getParameter("code")) {
                 String backUrl = RequestParameterUtil.getParameterWithOutCode(WebUtils.toHttp(request));
@@ -142,9 +150,11 @@ public class TraAuthenticationFilter extends AuthenticationFilter {
                     JSONObject result = JSONObject.parseObject(EntityUtils.toString(httpEntity));
                     if (1 == result.getIntValue("code") && result.getString("data").equals(code)) {
                         // code校验正确，创建局部会话
-                        RedisUtil.set(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId, code, timeOut);
+                        //RedisUtil.set(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId, code, timeOut);
+                        jedisClient.set(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId, code, timeOut);
                         // 保存code对应的局部会话sessionId，方便退出操作
-                        RedisUtil.sadd(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, sessionId, timeOut);
+                        //RedisUtil.sadd(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, sessionId, timeOut);
+                        jedisClient.sadd(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, sessionId, timeOut);
                         logger.debug("当前code={}，对应的注册系统个数：{}个", code, RedisUtil.getJedis().scard(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code));
                         // 移除url中的token参数
                         String backUrl = RequestParameterUtil.getParameterWithOutCode(WebUtils.toHttp(request));

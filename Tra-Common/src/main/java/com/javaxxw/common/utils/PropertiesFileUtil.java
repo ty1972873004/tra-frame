@@ -1,5 +1,8 @@
 package com.javaxxw.common.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.MissingResourceException;
@@ -13,6 +16,8 @@ import java.util.ResourceBundle;
  * @version 1.0
  */
 public class PropertiesFileUtil {
+    
+    private static Logger logger = LogManager.getLogger(PropertiesFileUtil.class);
 
     // 当打开多个资源文件时，缓存资源文件
     private static HashMap<String, PropertiesFileUtil> configMap = new HashMap<String, PropertiesFileUtil>();
@@ -84,6 +89,14 @@ public class PropertiesFileUtil {
 
     public Date getLoadTime() {
         return loadTime;
+    }
+
+    public static void flushMessage() {
+        configMap.clear();
+    }
+
+    public static void main(String[] args){
+        flushMessage();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.javaxxw.shiro.session;
 
 import com.javaxxw.common.constants.Constants;
+import com.javaxxw.redis.service.JedisClient;
 import com.javaxxw.redis.service.RedisUtil;
 import com.javaxxw.util.SerializableUtil;
 import org.apache.commons.lang3.ObjectUtils;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.ValidatingSession;
 import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
 import java.io.Serializable;
@@ -37,18 +39,23 @@ public class TraSessionDao extends CachingSessionDAO {
     // 单点同一个code所有局部会话key
     private final static String TRA_MANAGER_CLIENT_SESSION_IDS = "tra-manager-client-session-ids";
 
+    @Autowired
+    private JedisClient jedisClient;
+
     @Override
     protected Serializable doCreate(Session session) {
         Serializable sessionId = generateSessionId(session);
         assignSessionId(session, sessionId);
-        RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId, SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
+        //RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId, SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
+        jedisClient.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId, SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
         logger.debug("doCreate >>>>> sessionId={}", sessionId);
         return sessionId;
     }
 
     @Override
     protected Session doReadSession(Serializable sessionId) {
-        String session = RedisUtil.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
+        //String session = RedisUtil.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
+        String session = (String)jedisClient.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
         logger.debug("doReadSession >>>>> sessionId={}", sessionId);
         return SerializableUtil.deserialize(session);
     }
@@ -66,7 +73,8 @@ public class TraSessionDao extends CachingSessionDAO {
             traSession.setStatus(cacheTraSession.getStatus());
             traSession.setAttribute("FORCE_LOGOUT", cacheTraSession.getAttribute("FORCE_LOGOUT"));
         }
-        RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + session.getId(), SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
+        //RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + session.getId(), SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
+        jedisClient.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + session.getId(), SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
         // 更新TRA_MANAGER_SERVER_SESSION_ID、TRA_MANAGER_SERVER_CODE过期时间 TODO
         logger.debug("doUpdate >>>>> sessionId={}", session.getId());
     }
@@ -77,33 +85,46 @@ public class TraSessionDao extends CachingSessionDAO {
         String traType = ObjectUtils.toString(session.getAttribute(Constants.MANAGER_TYPE));
         if ("client".equals(traType)) {
             // 删除局部会话和同一code注册的局部会话
-            String code = RedisUtil.get(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId);
-            Jedis jedis = RedisUtil.getJedis();
-            jedis.del(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId);
-            jedis.srem(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, sessionId);
-            jedis.close();
+            //String code = RedisUtil.get(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId);
+            String code = (String)jedisClient.get(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId);
+            //Jedis jedis = RedisUtil.getJedis();
+            //jedis.del(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId);
+            //jedis.srem(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, sessionId);
+            //jedis.close();
+            jedisClient.del(TRA_MANAGER_CLIENT_SESSION_ID + "_" + sessionId);
+            jedisClient.srem(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, sessionId);
+
         }
         if ("server".equals(traType)) {
             // 当前全局会话code
-            String code = RedisUtil.get(TRA_MANAGER_SERVER_SESSION_ID + "_" + sessionId);
+            //String code = RedisUtil.get(TRA_MANAGER_SERVER_SESSION_ID + "_" + sessionId);
+            String code = (String)jedisClient.get(TRA_MANAGER_SERVER_SESSION_ID + "_" + sessionId);
             // 清除全局会话
-            RedisUtil.remove(TRA_MANAGER_SERVER_SESSION_ID + "_" + sessionId);
+            //RedisUtil.remove(TRA_MANAGER_SERVER_SESSION_ID + "_" + sessionId);
+            jedisClient.del(TRA_MANAGER_SERVER_SESSION_ID + "_" + sessionId);
             // 清除code校验值
-            RedisUtil.remove(TRA_MANAGER_SERVER_CODE + "_" + code);
+            //RedisUtil.remove(TRA_MANAGER_SERVER_CODE + "_" + code);
+            jedisClient.del(TRA_MANAGER_SERVER_CODE + "_" + code);
             // 清除所有局部会话
-            Jedis jedis = RedisUtil.getJedis();
-            Set<String> clientSessionIds = jedis.smembers(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code);
+            //Jedis jedis = RedisUtil.getJedis();
+            //Set<String> clientSessionIds = jedis.smembers(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code);
+            Set<String> clientSessionIds = jedisClient.smembers(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code);
             for (String clientSessionId : clientSessionIds) {
-                jedis.del(TRA_MANAGER_CLIENT_SESSION_ID + "_" + clientSessionId);
-                jedis.srem(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, clientSessionId);
+                //jedis.del(TRA_MANAGER_CLIENT_SESSION_ID + "_" + clientSessionId);
+                //jedis.srem(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, clientSessionId);
+                jedisClient.del(TRA_MANAGER_CLIENT_SESSION_ID + "_" + clientSessionId);
+                jedisClient.srem(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code, clientSessionId);
             }
-            logger.debug("当前code={}，对应的注册系统个数：{}个", code, jedis.scard(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code));
-            jedis.close();
+            //logger.debug("当前code={}，对应的注册系统个数：{}个", code, jedis.scard(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code));
+            logger.debug("当前code={}，对应的注册系统个数：{}个", code,jedisClient.scard(TRA_MANAGER_CLIENT_SESSION_IDS + "_" + code));
+            //jedis.close();
             // 维护会话id列表，提供会话分页管理
-            RedisUtil.lrem(TRA_MANAGER_SERVER_SESSION_IDS, 1, sessionId);
+            //RedisUtil.lrem(TRA_MANAGER_SERVER_SESSION_IDS, 1, sessionId);
+            jedisClient.lrem(TRA_MANAGER_SERVER_SESSION_IDS, 1, sessionId);
         }
         // 删除session
-        RedisUtil.remove(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
+        //RedisUtil.remove(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
+        jedisClient.del(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
         logger.debug("doUpdate >>>>> sessionId={}", sessionId);
     }
 
@@ -115,23 +136,27 @@ public class TraSessionDao extends CachingSessionDAO {
      */
     public Map getActiveSessions(int offset, int limit) {
         Map sessions = new HashMap();
-        Jedis jedis = RedisUtil.getJedis();
+        //Jedis jedis = RedisUtil.getJedis();
         // 获取在线会话总数
-        long total = jedis.llen(TRA_MANAGER_SERVER_SESSION_IDS);
+        //long total = jedis.llen(TRA_MANAGER_SERVER_SESSION_IDS);
+        long total =jedisClient.llen(TRA_MANAGER_SERVER_SESSION_IDS);
         // 获取当前页会话详情
-        List<String> ids = jedis.lrange(TRA_MANAGER_SERVER_SESSION_IDS, offset, (offset + limit - 1));
+       // List<String> ids = jedis.lrange(TRA_MANAGER_SERVER_SESSION_IDS, offset, (offset + limit - 1));
+        List<String> ids = jedisClient.lrange(TRA_MANAGER_SERVER_SESSION_IDS, offset, (offset + limit - 1));
         List<Session> rows = new ArrayList<>();
         for (String id : ids) {
-            String session = RedisUtil.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + id);
+            //String session = RedisUtil.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + id);
+            String session = (String)jedisClient.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + id);
             // 过滤redis过期session
             if (null == session) {
-                RedisUtil.lrem(TRA_MANAGER_SERVER_SESSION_IDS, 1, id);
+                //RedisUtil.lrem(TRA_MANAGER_SERVER_SESSION_IDS, 1, id);
+                jedisClient.lrem(TRA_MANAGER_SERVER_SESSION_IDS, 1, id);
                 total = total - 1;
                 continue;
             }
              rows.add(SerializableUtil.deserialize(session));
         }
-        jedis.close();
+        //jedis.close();
         sessions.put("total", total);
         sessions.put("rows", rows);
         return sessions;
@@ -146,11 +171,13 @@ public class TraSessionDao extends CachingSessionDAO {
         String[] sessionIds = ids.split(",");
         for (String sessionId : sessionIds) {
             // 会话增加强制退出属性标识，当此会话访问系统时，判断有该标识，则退出登录
-            String session = RedisUtil.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
+            //String session = RedisUtil.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
+            String session = (String)jedisClient.get(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId);
             TraSession traSession = (TraSession) SerializableUtil.deserialize(session);
             traSession.setStatus(TraSession.OnlineStatus.force_logout);
             traSession.setAttribute("FORCE_LOGOUT", "FORCE_LOGOUT");
-            RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId, SerializableUtil.serialize(traSession), (int) traSession.getTimeout() / 1000);
+            //RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId, SerializableUtil.serialize(traSession), (int) traSession.getTimeout() / 1000);
+            jedisClient.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + sessionId, SerializableUtil.serialize(traSession), (int) traSession.getTimeout() / 1000);
         }
         return sessionIds.length;
     }
@@ -167,7 +194,8 @@ public class TraSessionDao extends CachingSessionDAO {
             return;
         }
         session.setStatus(onlineStatus);
-        RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + session.getId(), SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
+        //RedisUtil.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + session.getId(), SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
+        jedisClient.set(TRA_MANAGER_SHIRO_SESSION_ID + "_" + session.getId(), SerializableUtil.serialize(session), (int) session.getTimeout() / 1000);
     }
 
 }

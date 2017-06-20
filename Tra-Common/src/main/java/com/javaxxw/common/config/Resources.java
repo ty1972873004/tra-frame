@@ -10,8 +10,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * @desc 加载配置
- * @author Administrator
- * @since 2017/6/16
+ * @author tuyong
+ * @since 2017/6/20
  * @version 1.0
  */
 public final class Resources {

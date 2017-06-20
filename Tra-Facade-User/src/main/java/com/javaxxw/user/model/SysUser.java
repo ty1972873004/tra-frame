@@ -36,7 +36,7 @@ public class SysUser extends BaseModel {
 
     private String phone;
 
-    private String mail;
+    private String email;
 
     private String sex;
 
@@ -130,12 +130,12 @@ public class SysUser extends BaseModel {
         this.phone = phone;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSex() {

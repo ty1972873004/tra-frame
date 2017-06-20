@@ -46,4 +46,8 @@ public class MD5Util {
         }
     }
 
+    public static void main(String[] args){
+         System.out.println(MD5("123456"+"66f1b370c660445a8657bf8bf1794486"));
+    }
+
 }

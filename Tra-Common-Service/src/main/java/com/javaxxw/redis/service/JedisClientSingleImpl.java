@@ -6,6 +6,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 public class JedisClientSingleImpl implements JedisClient{
@@ -380,5 +381,120 @@ public class JedisClientSingleImpl implements JedisClient{
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void sadd(String key, String value, int seconds) {
+		Jedis jedis = jedisPool.getResource();
+		try{
+			jedis.sadd(key, value);
+			jedis.expire(key, seconds);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
+	}
+
+	@Override
+	public Set<String> smembers(String key) {
+		Jedis jedis = jedisPool.getResource();
+		Set<String> keys = null;
+		try{
+			keys=jedis.smembers(key);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
+		return keys;
+	}
+
+	@Override
+	public Long scard(String key) {
+		Jedis jedis = jedisPool.getResource();
+		Long result = Long.valueOf(0);
+		try{
+			result=jedis.scard(key);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void lrem(String key, long count, String value) {
+		Jedis jedis = jedisPool.getResource();
+		try{
+			jedis.lrem(key, count, value);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
+	}
+
+	@Override
+	public Long llen(String key) {
+		Jedis jedis = jedisPool.getResource();
+		Long result = Long.valueOf(0);
+		try{
+			result=jedis.llen(key);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<String> lrange(String key, long start, long end) {
+		Jedis jedis = jedisPool.getResource();
+		List<String> result=null;
+
+		try{
+			result=jedis.lrange(key, start, end);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void lpush(String key, String... strings) {
+		Jedis jedis = jedisPool.getResource();
+		try{
+			jedis.lpush(key,strings);
+		}catch (Exception e) {
+			//jedisPool.returnBrokenResource(jedis);
+		} finally {
+			//jedisPool.returnResource(jedis);
+			if(null != jedis){
+				jedis.close();
+			}
+		}
 	}
 }

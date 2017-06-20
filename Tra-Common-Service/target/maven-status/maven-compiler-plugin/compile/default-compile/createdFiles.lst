@@ -4,6 +4,7 @@ com\javaxxw\base\service\BaseService.class
 com\javaxxw\redis\service\RedisUtil.class
 com\javaxxw\base\service\BaseServiceImpl$3.class
 com\javaxxw\base\service\BaseServiceImpl$2.class
+com\javaxxw\base\BaseResult.class
 com\javaxxw\base\controller\BaseController.class
 com\javaxxw\redis\service\JedisClientSingleImpl.class
 com\javaxxw\base\service\BaseServiceImpl$1.class
