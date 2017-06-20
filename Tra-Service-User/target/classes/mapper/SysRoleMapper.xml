@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaxxw.user.mapper.SysRoleMapper">
+	<!-- 查询列表-->
+	<select id="selectIdPage" resultType="java.lang.Long">
+		SELECT id FROM sys_role
+		<where>
+			<if test="cm.roleName != null and cm.roleName != ''">
+				 and role_name = #{cm.roleName}
+			</if>
+			<if test="cm.roleType != null and cm.roleType != ''">
+				and role_type = #{cm.roleType}
+			</if>
+			<if test="cm.roleKey != null and cm.roleKey != ''">
+				and role_key = #{cm.roleKey}
+			</if>
+			<if test="cm.status != null and cm.status != ''">
+				and status_ = #{cm.status}
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable = #{cm.enable}
+			</if>
+			<if test="cm.remark != null and cm.remark != ''">
+				and remark = #{cm.remark}
+			</if>
+			<if test="cm.createTime != null and cm.createTime != ''">
+				and create_time = #{cm.createTime}
+			</if>
+			<if test="cm.createBy != null and cm.createBy != ''">
+				and create_by = #{cm.createBy}
+			</if>
+			<if test="cm.updateTime != null and cm.updateTime != ''">
+				and update_time = #{cm.updateTime}
+			</if>
+			<if test="cm.updateBy != null and cm.updateBy != ''">
+				and update_by = #{cm.updateBy}
+			</if>
+
+		</where>
+		ORDER BY id DESC
+	</select>
+</mapper>

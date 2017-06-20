@@ -1,0 +1,16 @@
+com\javaxxw\common\exception\DataParseException.class
+com\javaxxw\common\utils\PropertiesFileUtil.class
+com\javaxxw\common\aspect\ChooseDataSource.class
+com\javaxxw\common\config\Resources.class
+com\javaxxw\common\utils\DataUtil.class
+com\javaxxw\common\utils\MD5Util.class
+com\javaxxw\common\constants\Constants.class
+com\javaxxw\common\exception\InstanceException.class
+com\javaxxw\common\aspect\HandleDataSource.class
+com\javaxxw\common\aspect\DataSourceAspect.class
+com\javaxxw\common\utils\InstanceUtil.class
+com\javaxxw\common\constants\Constants$JOBSTATE.class
+com\javaxxw\common\utils\SerializeUtils.class
+com\javaxxw\common\utils\SpringContextUtil.class
+com\javaxxw\common\exception\BaseException.class
+com\javaxxw\common\utils\ExceptionUtil.class

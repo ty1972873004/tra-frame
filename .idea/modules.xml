@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Tra.iml" filepath="$PROJECT_DIR$/Tra.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Common/Tra-Common.iml" filepath="$PROJECT_DIR$/Tra-Common/Tra-Common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Common-Config/Tra-Common-Config.iml" filepath="$PROJECT_DIR$/Tra-Common-Config/Tra-Common-Config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Common-Service/Tra-Common-Service.iml" filepath="$PROJECT_DIR$/Tra-Common-Service/Tra-Common-Service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Common-Shiro/Tra-Common-Shiro.iml" filepath="$PROJECT_DIR$/Tra-Common-Shiro/Tra-Common-Shiro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Common-Web/Tra-Common-Web.iml" filepath="$PROJECT_DIR$/Tra-Common-Web/Tra-Common-Web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Facade-User/Tra-Facade-User.iml" filepath="$PROJECT_DIR$/Tra-Facade-User/Tra-Facade-User.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Service-User/Tra-Service-User.iml" filepath="$PROJECT_DIR$/Tra-Service-User/Tra-Service-User.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tra-Web-Manager/Tra-Web-Manager.iml" filepath="$PROJECT_DIR$/Tra-Web-Manager/Tra-Web-Manager.iml" />
+    </modules>
+  </component>
+</project>

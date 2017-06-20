@@ -1,0 +1,9 @@
+com\javaxxw\user\DubboProvider.class
+com\javaxxw\user\service\SysMenuServiceImpl.class
+com\javaxxw\user\mapper\SysMenuMapper.class
+com\javaxxw\user\service\SysAuthorizeServiceImpl.class
+com\javaxxw\user\mapper\SysRoleMenuMapper.class
+com\javaxxw\user\mapper\SysUserMapper.class
+com\javaxxw\user\service\SysUserServiceImpl.class
+com\javaxxw\user\service\SysRoleServiceImpl.class
+com\javaxxw\user\mapper\SysRoleMapper.class

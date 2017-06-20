@@ -1,0 +1,16 @@
+com\javaxxw\util\SerializableUtil.class
+com\javaxxw\base\model\BaseModel.class
+com\javaxxw\base\service\BaseService.class
+com\javaxxw\redis\service\RedisUtil.class
+com\javaxxw\base\service\BaseServiceImpl$3.class
+com\javaxxw\base\service\BaseServiceImpl$2.class
+com\javaxxw\base\controller\BaseController.class
+com\javaxxw\redis\service\JedisClientSingleImpl.class
+com\javaxxw\base\service\BaseServiceImpl$1.class
+com\javaxxw\redis\service\CacheUtils.class
+com\javaxxw\redis\service\JedisClient.class
+com\javaxxw\redis\service\JedisClientClusterImpl.class
+com\javaxxw\base\service\BaseServiceImpl$5.class
+com\javaxxw\base\BaseMapper.class
+com\javaxxw\base\service\BaseServiceImpl.class
+com\javaxxw\base\service\BaseServiceImpl$4.class
