@@ -1,4 +1,5 @@
 com\javaxxw\manager\controller\sso\SSOController.class
+com\javaxxw\manager\controller\admin\SysRoleController.class
 com\javaxxw\manager\controller\admin\ManageController.class
 com\javaxxw\manager\core\interceptor\ManagerInterceptor.class
 com\javaxxw\manager\core\config\SwaggerConfig.class

@@ -36,4 +36,28 @@
 		</where>
 		ORDER BY id DESC
 	</select>
+
+	<select id="selectMenuByUserId" parameterType="long" resultType="map">
+		 SELECT
+			concat(id) AS id,
+			menu_name AS menuName,
+			menu_type AS menuType,
+			concat(parent_id) AS parentId,
+			menu_key AS menuKey,
+			request AS request,
+			icon AS icon,
+			is_hide AS isHide,
+			sort AS sort
+		FROM
+			sys_menu
+		WHERE
+			id IN (
+				SELECT
+					menu_id
+				FROM
+					sys_menu_user
+				WHERE
+					user_id = #{userId}
+			)
+	</select>
 </mapper>

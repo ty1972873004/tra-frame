@@ -2,10 +2,13 @@ package com.javaxxw.manager.controller.admin;
 
 
 import com.javaxxw.base.controller.BaseController;
+import com.javaxxw.common.utils.BeanUtils;
+import com.javaxxw.user.entity.MenuTreeObject;
 import com.javaxxw.user.model.SysMenu;
 import com.javaxxw.user.model.SysUser;
 import com.javaxxw.user.service.SysAuthorizeService;
 import com.javaxxw.user.service.SysUserService;
+import com.javaxxw.user.util.MenuTreeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +21,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc 
@@ -43,7 +49,7 @@ public class ManageController extends BaseController {
 
 	@ApiOperation(value = "后台首页")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String index(ModelMap modelMap) {
+	public String index(ModelMap modelMap) throws Exception {
 		// 已注册系统
 	    //TODO
 		// 当前登录用户权限
@@ -51,10 +57,26 @@ public class ManageController extends BaseController {
 		String username = (String) subject.getPrincipal();
 		SysUser sysUser = sysUserService.findByLoginName(username);
 
-		List<SysMenu>  tPermissions = sysAuthorizeService.selectPermissionByUserId(sysUser.getId());
+		List<Map<String, Object>> tPermissions = sysAuthorizeService.selectMenuByUserId(sysUser.getId());
+		List<MenuTreeObject> list=new ArrayList<MenuTreeObject>();
+		for(Map<String, Object> map:tPermissions){
+			MenuTreeObject ts = new MenuTreeObject();
+			BeanUtils.flushObject(ts,map);
+			list.add(ts);
+		}
 
-		modelMap.put("tPermissions", tPermissions);
+		MenuTreeUtil menuTreeUtil=new MenuTreeUtil();
+		List<MenuTreeObject> ns = menuTreeUtil.getChildTreeObjects(list, 0);
+
+		modelMap.addAttribute("sysUser", sysUser);
+		modelMap.put("list", ns);
 		return "/manager/index.jsp";
+	}
+
+	@RequestMapping(value = "/welcome", method = RequestMethod.GET)
+	public String index(ModelMap modelMap,HttpServletRequest request) throws Exception {
+		String v = request.getParameter("v");
+		return "/manager/welcome.jsp?v="+v;
 	}
 
 }

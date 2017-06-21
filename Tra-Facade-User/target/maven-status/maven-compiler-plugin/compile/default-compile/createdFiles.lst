@@ -1,8 +1,12 @@
 com\javaxxw\user\model\SysRoleMenu.class
 com\javaxxw\user\service\SysRoleService.class
+com\javaxxw\user\util\MenuTreeUtil.class
+com\javaxxw\user\model\SysUserRole.class
+com\javaxxw\user\entity\MenuTreeObject.class
 com\javaxxw\user\model\SysUser.class
 com\javaxxw\user\service\SysUserService.class
 com\javaxxw\user\model\SysRole.class
 com\javaxxw\user\service\SysMenuService.class
 com\javaxxw\user\service\SysAuthorizeService.class
 com\javaxxw\user\model\SysMenu.class
+com\javaxxw\user\model\SysMenuUser.class
