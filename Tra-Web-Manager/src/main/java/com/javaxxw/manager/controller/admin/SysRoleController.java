@@ -6,6 +6,7 @@ import com.javaxxw.shiro.util.WebUtil;
 import com.javaxxw.user.model.SysRole;
 import com.javaxxw.user.service.SysRoleService;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +30,16 @@ public class SysRoleController extends BaseController {
     @Autowired
     private SysRoleService sysRoleService;
 
+    @RequiresPermissions("manager:role:read")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String toList(){
         return "/manager/role/list.jsp";
     }
+
+    @RequiresPermissions("manager:role:read")
     @ResponseBody
     @RequestMapping("findByPage")
-    public Page findByPage(String pageNow,
+    public Page<SysRole> findByPage(String pageNow,
                            String pageSize, String column, HttpServletRequest request) throws Exception {
         Map<String, Object> params = WebUtil.getParameterMap(request);
         params.put("pageNum", pageNow);
@@ -45,6 +49,7 @@ public class SysRoleController extends BaseController {
         Page<SysRole> list=sysRoleService.queryBean(params);
         return list;
     }
+
 
 
 }

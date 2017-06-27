@@ -26,12 +26,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRole> implements SysR
 
     @Override
     public Page<SysRole> queryBean(Map<String, Object> params) {
-        Page<Long> page = getPage(params);
-        page.setRecords(sysRoleMapper.selectIdPage(page, params));
-        Page<SysRole> pageInfo = getPage(page, SysRole.class);
-//        for (SysRole sysRole : pageInfo.getRecords()) {
-//
-//        }
+        Page<SysRole> pageInfo = super.query(params);
         return pageInfo;
     }
 }

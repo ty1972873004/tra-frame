@@ -39,7 +39,7 @@
             <div class="col-sm-12">
                 <div class="login-form">
                     <h4 class="no-margins">登录：</h4>
-                    <p class="m-t-md">登录到H+后台主题UI框架</p>
+                    <p class="m-t-md">登录到Tra后台管理系统</p>
                     <input type="text" class="form-control uname" placeholder="用户名" id="username" name="username"/>
                     <input type="password" class="form-control pword m-b" placeholder="密码" id="password" name="password"/>
                     <label><input type="checkbox" class="i-checks" name="rememberMe" id="rememberMe">自动登录</label>
@@ -50,7 +50,7 @@
         </div>
         <div class="signup-footer">
             <div class="pull-left">
-                &copy; hAdmin
+                &copy; TUYONG
             </div>
         </div>
     </div>

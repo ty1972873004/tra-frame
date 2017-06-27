@@ -13,8 +13,11 @@
 								   location="classpath:common.properties,classpath:config/*.properties,
                                   file:/usr/web_home/manage/resource/*.properties" />
 
-	<!-- 扫描包加载Service实现类-->
-	<context:component-scan base-package="com.javaxxw.*.service,com.javaxxw.*.context" />
+	<!-- 扫描注解 -->
+	<context:component-scan base-package="com.javaxxw">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="org.springframework.cache.annotation.EnableCaching" />
+	</context:component-scan>
 
 	<!--<import resource="classpath:spring/spring-dubbo-consumer.xml" />-->
 

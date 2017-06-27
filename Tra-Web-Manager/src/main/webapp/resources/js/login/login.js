@@ -26,9 +26,9 @@ function login() {
         },
         success: function(json){
             if (json.code == 1) {
-                location.href = json.data;
+                location.href = BASE_PATH+json.data;
             } else {
-                alert(json.data);
+                alert(json.msg);
             }
         },
         error: function(error){

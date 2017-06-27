@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.javaxxw.base.BaseMapper;
 import com.javaxxw.base.model.BaseModel;
 import com.javaxxw.common.constants.Constants;
-import com.javaxxw.common.utils.DataUtil;
-import com.javaxxw.common.utils.ExceptionUtil;
-import com.javaxxw.common.utils.InstanceUtil;
+import com.javaxxw.common.utils.*;
 import com.javaxxw.redis.service.CacheUtils;
 import com.javaxxw.redis.service.JedisClient;
 import org.apache.commons.lang3.RandomUtils;
@@ -53,13 +51,16 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
     @Override
     public T queryById(Long id) {
         String key = getCacheKey(id);
-        T record = (T) this.jedisClient.get(key);
+       // T record = null;
+        byte[] value = jedisClient.get(key.getBytes());
+        Object object = SerializeUtils.deserialize(value);
+        T record =(T)object;
         if (record == null) {
             String lockKey = getLockKey(id);
             if (CacheUtils.getLock(lockKey)) {
                 try {
                     record = mapper.selectById(id);
-                    jedisClient.set(key, record);
+                    jedisClient.set(key.getBytes(), SerializeUtils.serialize(record));
                 } finally {
                     CacheUtils.unlock(lockKey);
                 }
@@ -241,6 +242,7 @@ public abstract class BaseServiceImpl<T extends BaseModel> implements BaseServic
                 final int index = i;
                 executorService.execute(new Runnable() {
                     public void run() {
+                         System.out.println(ids.getRecords().get(index));
                         T t = queryById(ids.getRecords().get(index));
                         K k = InstanceUtil.to(t, cls);
                         records.set(index, k);

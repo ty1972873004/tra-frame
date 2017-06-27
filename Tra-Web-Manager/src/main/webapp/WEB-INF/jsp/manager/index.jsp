@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 
-    <title> hAdmin- 主页</title>
+    <title>Tra后台管理系统</title>
 
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -44,7 +44,7 @@
                 var url = $(this).attr('href');
                 var nav = $(this).attr("nav-n");
                 var sn = nav.split(",");
-                var url=rootPath+sn[2]
+                var url=rootPath+sn[2];
                 $("#J_iframe").attr('src',url);
                 return false;
             });
@@ -94,11 +94,7 @@
                         </ul>
                     </li>
                     </c:forEach>
-
                     <li class="line dk"></li>
-
-
-
                 </ul>
             </div>
         </nav>
@@ -107,7 +103,6 @@
         <div id="page-wrapper" class="gray-bg dashbard-1">
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-
                     <ul class="nav navbar-top-links navbar-right">
                         <li class="dropdown">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -117,7 +112,7 @@
                                 <li class="m-t-xs">
                                     <div class="dropdown-messages-box">
                                         <a href="profile.html" class="pull-left">
-                                            <img alt="image" class="img-circle" src="img/a7.jpg">
+                                            <img alt="image" class="img-circle" src="${basePath}/resources/img/a7.jpg">
                                         </a>
                                         <div class="media-body">
                                             <small class="pull-right">46小时前</small>
@@ -131,7 +126,7 @@
                                 <li>
                                     <div class="dropdown-messages-box">
                                         <a href="profile.html" class="pull-left">
-                                            <img alt="image" class="img-circle" src="img/a4.jpg">
+                                            <img alt="image" class="img-circle" src="${basePath}/resources/img/a4.jpg">
                                         </a>
                                         <div class="media-body ">
                                             <small class="pull-right text-navy">25小时前</small>

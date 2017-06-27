@@ -1,6 +1,7 @@
 package com.javaxxw.manager.core.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -21,17 +22,14 @@ import springfox.documentation.service.Contact;
 @Configuration
 @EnableWebMvc
 @EnableSwagger2
+@ComponentScan("com.***.manager.controller")
 public class SwaggerConfig {
 
 
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.javaxxw.manager"))
-                .paths(PathSelectors.any())
-                .build();
+        return new Docket(DocumentationType.SWAGGER_2).groupName("full-platform").apiInfo(apiInfo())
+                .forCodeGeneration(true);
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()

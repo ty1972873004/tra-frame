@@ -68,8 +68,6 @@ public class SSOController extends BaseController {
         if (StringUtils.isBlank(appid)) {
             throw new RuntimeException("无效访问！");
         }
-
-
         return "redirect:/sso/login?backurl=" + URLEncoder.encode(backurl, "utf-8");
     }
 
@@ -167,7 +165,7 @@ public class SSOController extends BaseController {
         String backurl = request.getParameter("backurl");
 
         if (StringUtils.isBlank(backurl)) {
-            return setModelMap(modelMap,WebConstants.REQUEST_SUCCESS,"/");
+            return setModelMap(modelMap,WebConstants.REQUEST_SUCCESS,"/manage/index");
         }else {
             return setModelMap(modelMap,WebConstants.REQUEST_SUCCESS,backurl);
         }

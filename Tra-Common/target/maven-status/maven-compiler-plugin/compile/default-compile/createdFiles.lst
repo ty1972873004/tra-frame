@@ -4,6 +4,7 @@ com\javaxxw\common\aspect\ChooseDataSource.class
 com\javaxxw\common\config\Resources.class
 com\javaxxw\common\utils\DataUtil.class
 com\javaxxw\common\utils\MD5Util.class
+com\javaxxw\common\utils\JsonUtils.class
 com\javaxxw\common\constants\Constants.class
 com\javaxxw\common\constants\WebConstants.class
 com\javaxxw\common\exception\InstanceException.class
